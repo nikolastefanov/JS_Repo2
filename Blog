@@ -1,0 +1,133 @@
+function attachEvents() {
+    document.getElementById('btnLoadPosts').addEventListener('click',getPosts);
+
+    document.getElementById('btnViewPost').addEventListener('click',displayPost);
+}
+
+attachEvents();
+
+
+async function getPosts(){
+
+    const url='http://localhost:3030/jsonstore/blog/posts';
+
+const response=await fetch(url);
+
+const data=await response.json();
+
+const select=document.getElementById('posts');
+
+Object.values(data).map(createOption)
+.forEach(o=>select.appendChild(o));
+
+};
+
+
+function createOption(post){
+
+const result=document.createElement('option');
+
+result.textContent=post.title;
+
+result.value=post.id;
+
+return result;
+}
+
+
+function displayPost(){
+    //find selected option
+
+    const postId=document.getElementById('posts').value;
+
+    getCommentsPostId(postId);
+}
+
+
+async function getCommentsPostId(postId){
+
+    const urlPost='http://localhost:3030/jsonstore/blog/posts'+postId;
+
+    const postResponse=await fetch(urlPost);
+
+    const postData=await postResponse.json();
+
+    document.getElementById('post-title').textContent=postData.title;
+
+    document.getElementById('post-body').textContent=postData.body;
+
+
+const url='http://localhost:3030/jsonstore/blog/comments';
+
+const commentsResponse=await fetch(url);
+
+const commentsData=await commentsResponse.json();
+
+const comments=Object.values(commentsData)
+.filter(c=>c.postId==postId);
+
+const commentsUl=document.getElementById('post-comments');
+
+comments.map(createComment)
+.forEach(c=>commentsUl.appendChild(c));
+
+}
+
+
+function createComment(comment){
+
+    const result=document.createElement('li');
+
+    result.textContent=comment.text;
+
+    result.id=comment.id;
+
+    return result;
+}
+
+
+
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <h1>All Posts</h1>
+    <button id="btnLoadPosts">Load Posts</button>
+    <select id="posts"></select>
+    <button id="btnViewPost">View</button>
+    <h1 id="post-title">Post Details</h1>
+    <ul id="post-body"></ul>
+    <h2>Comments</h2>
+    <ul id="post-comments"></ul>
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+body {
+    font-family: 'Open Sans', serif;
+}
+select {
+    padding: 10px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
