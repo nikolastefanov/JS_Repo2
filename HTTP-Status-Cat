@@ -1,0 +1,129 @@
+import{html,render} from './node_modules/lit-html/lit-html.js';
+
+import{cats as catData} from './catSeeder.js';
+
+const catCardTemplate=(cat)=>html`
+            <li>
+                <img src="./images/${cat.imageLocation}.jpg" width="250" height="250" alt="Card image cap">
+                <div class="info">
+                    <button class="showBtn">Show status code</button>
+                    <div class="status" style="display: none" id=${cat.id}>
+                        <h4>Status Code: ${cat.statusCode}</h4>
+                        <p>${cat.statusMessage}</p>
+                    </div>
+                </div>
+            </li>`;
+
+
+
+            const main=document.getElementById('allCats');
+
+
+            const catsList=html`
+            <ul @click=${toggleInfo}>
+                 ${catData.map(c=>catCardTemplate(c))}
+                 </ul>`;
+
+render(catsList,main);
+
+function toggleInfo(event){
+
+    const element=event.target.parentNode.querySelector('.status');
+
+    if(element.style.display=='none'){
+        element.removeAttribute('style');
+    }else{
+        element.style.display='none';
+    }
+}
+
+
+class Cat {
+    constructor(id, statusCode, statusMessage, imageLocation) {
+        this.id = id;
+        this.statusCode = statusCode;
+        this.statusMessage = statusMessage;
+        this.imageLocation = imageLocation;
+    }
+}
+
+const cats = [
+    new Cat('100', 100, 'Continue', 'cat100'),
+    new Cat('200', 200, 'Ok', 'cat200'),
+    new Cat('204', 204, 'No content', 'cat204'),
+    new Cat('301', 301, 'Moved permanently', 'cat301'),
+    new Cat('304', 304, 'Not modified', 'cat304'),
+    new Cat('400', 400, 'Bad request', 'cat400'),
+    new Cat('404', 404, 'Not Found', 'cat404'),
+    new Cat('406', 406, 'Not Acceptable', 'cat406'),
+    new Cat('410', 410, 'Gone', 'cat410'),
+    new Cat('500', 500, 'Internal Server Error', 'cat500'),
+    new Cat('511', 511, 'Network Authentication Required', 'cat511')
+];
+
+export {
+    cats
+};
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Http Status Cats</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./app.js"></script>
+</head>
+
+<body>
+    <section id="allCats">
+
+    </section>
+</body>
+
+</html>
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    display: inline-block;
+    padding: 3rem;
+    margin-bottom: 1.5rem;
+    margin-left: 3.5rem;
+    margin-top: 3rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.info {
+    display: inline-block;
+}
+
+.showBtn {
+    position: relative;
+    left: 1rem;
+    border: none;
+    background-color: #2AA5FE;
+    width: 13rem;
+    height: 3.5rem;
+    color: #fff;
+    border-radius: 17px;
+    font-weight: 600;
+    outline: none;
+}
+
+.status {
+    position: relative;
+    top: 1rem;
+    text-align: center;
+    left: 1rem;
+    font-weight: 600;
+}
+
+.status p {
+    padding: 1rem;
+}
