@@ -1,0 +1,114 @@
+function encodeAndDecodeMessages() {
+  const textareas=document.querySelectorAll('textarea');
+  const buttons=document.querySelectorAll('button');
+
+   //console.log(textareas);
+   //console.log(buttons);
+
+   buttons[0].addEventListener('click',function(e){
+     const message=textareas[0].value
+                   .split('').map((char)=>
+                   String.fromCharCode(char.charCodeAt(0)+1))
+                   .join('');
+    //console.log(message);
+    textareas[0].value='';
+    textareas[1].value=message;
+   });
+
+   buttons[1].addEventListener('click',function(e){
+       const message=textareas[1].value
+                    .split('').map((char)=>
+                    String.fromCharCode(char.charCodeAt(0)-1))
+                    .join('');
+    //console.log(message)
+    textareas[1].value=message
+   });
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link rel="stylesheet" href="template.css">
+	<title>Encode and Decode Messages</title>
+</head>
+
+<body>
+	<div id="container">
+		<main id="main">
+			<div>
+				<p>Message</p>
+				<textarea placeholder="Write your message here..."></textarea>
+				<button>Encode and send it</button>
+			</div>
+			<div>
+				<p>Last received message</p>
+				<textarea disabled placeholder="No messages..."></textarea>
+				<button>Decode and read it</button>
+			</div>
+		</main>
+	</div>
+	<script src="./app.js"></script>
+	<script>
+		window.onload = encodeAndDecodeMessages();
+	</script>
+</body>
+
+</html>
+
+
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=PT+Sans');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    font-family: "PT sans", sans-serif;
+    font-size: 24px;
+    color: #234465;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+    flex-wrap: wrap;
+}
+#main{   
+    margin: 0 auto;
+    width: 50%;
+}
+
+main:after{
+    display: block;
+    content:'';
+    clear: both;
+}
+
+input[type="button"], button{
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7em;
+    margin-bottom: 5%;
+    border: none;
+    color: white;
+    background: #234465;
+    border-radius: 5px;
+    outline: none;
+}
+
+textarea{
+    width: 100%;
+    height: 20vh;
+    resize: none;
+    display: block;
+}
+
+#exercise div{
+	display: inline-block;
+	width: 49%;
+}
+
