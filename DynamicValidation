@@ -1,0 +1,42 @@
+<!--Problems for in-class lab for the “JavaScript Advanced” course @ SoftUni.
+Submit your solutions in the SoftUni judge system at https://judge.softuni.bg/Contests/1549/Lab-DOM-Manipulations -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dynamic Validation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="validate()">
+    <label for="email">Enter email:</label>
+    <input id="email" type="text" />
+
+    <script src="./app.js"></script>
+</body>
+</html>
+
+
+
+function validate() {
+ //select input field and add change event listener
+ document.getElementById('email')
+            .addEventListener('change',onChange);
+  
+            function onChange(ev){
+                //console.log('changed');
+                //OnChange->validate input
+                const email=ev.target.value;
+                if((/^[a-z]+@[a-z]+\.[a-z]+$/).test(email)){
+                    //if valid remove class error
+                    ev.target.className=' ';
+                }else{
+                    //else->add class error
+                    ev.target.className='error';
+                }
+            }
+}
