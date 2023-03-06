@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Highlight Active</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="focused()">
+    <div>
+        <div>
+            <h1>Section 1</h1><input type="text" />
+        </div>
+        <div>
+            <h1>Section 2</h1><input type="text" />
+        </div>
+        <div>
+            <h1>Section 3</h1><input type="text" />
+        </div>
+        <div>
+            <h1>Section 4</h1><input type="text" />
+        </div>
+    </div>
+    <script src="./app.js"></script>
+</html>
+
+
+
+function focused() {
+
+    document.querySelectorAll('input').forEach(i=>{
+        console.log(i);
+     i.addEventListener('focus',onFocus);
+     i.addEventListener('blur',onBlur);
+    })
+
+    function onFocus(event){
+
+        //on Focus => select input parent=>apply class "focused"
+ console.log('focus')
+    event.target.parentNode.className='focus';
+    }
+
+    function onBlur(event){
+        // on Blur =>select input parent => remove class "focused"
+     console.log('blur')
+        event.target.parentNode.className=' ';
+    }
+}
+
+
+@import url('https://fonts.googleapis.com/css?family=Baloo+Bhai');
+
+body {
+    font-family: 'Baloo Bhai', cursive;
+}
+
+div {
+    width: 50%;
+    margin: 0 auto;
+}
+
+div div {
+    text-align: center;
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+    margin: 15px;
+    border: 1px solid #999;
+}
+
+.focus {
+    background: #999999;
+}
+
+
