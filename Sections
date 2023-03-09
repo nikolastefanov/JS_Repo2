@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sections</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body onload="create(['Section 1', 'Section 2', 'Section 3', 'Section 4']);">
+    <div id="content">
+    </div>
+</body>
+
+</html>
+
+
+function create(words) {
+   const content=document.getElementById('content');
+
+   for(let i=0; i<words.length;i++){
+      const div=document.createElement('div');
+      const paragraph=document.createElement('p');
+      paragraph.textContent=words[i];
+      paragraph.style.display='none';
+      div.appendChild(paragraph);
+      div.addEventListener('click', function(e){
+         const p=e.target.children[0];
+         const isVisible=p.style.display==='block';
+         p.style.display=isVisible?'none':'block';
+      });
+      content.appendChild(div);
+   }
+}
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+#content {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#content div {
+    float: left;
+    width: 300px;
+    height: 300px;
+    margin: 2em;
+    background: #5555ff;
+    text-align: center;
+    border-radius: 4px;
+}
+
+#content div p {
+    color: white;
+    margin: 6em 3em 6em 3em;
+}
+
