@@ -1,0 +1,166 @@
+function deleteByEmail() {
+   //read input field value
+   const email=document.querySelector(
+       'input[name="email"]').value;
+    
+ //select all table cells from the last column
+ const rows=Array.from(document.querySelectorAll('tbody tr'));
+ let deleted=false;
+
+ //iterate over cells
+ for(let row of rows){
+     //if text mathes input value-> deleted row
+     if(row.querySelectorAll('td')[1].textContent==email){
+         //remove row from parentNode
+         row.parentNode.removeChild(row);
+         deleted=true;
+         document.getElementById('result').textContent='Deleted.';
+     }
+
+     if(deleted!=true){
+         //display result message
+         document.getElementById('result').textContent='Not fount';
+     }
+ }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Delete from Table</title>
+</head>
+
+<body>
+    <table border="1" id="customers">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Eve</td>
+                <td>eve@gmail.com</td>
+            </tr>
+            <tr>
+                <td>Nick</td>
+                <td>nick@yahooo.com</td>
+            </tr>
+            <tr>
+                <td>Didi</td>
+                <td>didi@didi.net</td>
+            </tr>
+            <tr>
+                <td>Tedy</td>
+                <td>tedy@tedy.com</td>
+            </tr>
+        </tbody>
+    </table>
+    <label>
+        Email: <input type="text" name="email" />
+        <button onclick="deleteByEmail()">Delete</button>
+    </label>
+    <div id="result"></div>
+    <script src="./app.js"></script>
+</body>
+
+</html>
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+}
+
+table {
+    text-align: left;
+    line-height: 40px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid #ed1c40;
+    width: 500px;
+    margin: 50px auto;
+    border-radius: .25rem;
+}
+
+th {
+    border: none;
+}
+
+thead tr:first-child {
+    background: #ed1c40;
+    color: #fff;
+    border: none;
+}
+
+th,
+td {
+    padding: 0 15px 0 20px;
+}
+
+th {
+    font-weight: 500;
+}
+
+tbody tr:hover {
+    background-color: #f2f2f2;
+    cursor: default;
+}
+
+.button {
+    color: #aaa;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -4px;
+}
+
+.edit:hover {
+    color: #0a79df;
+}
+
+.delete:hover {
+    color: #dc2a2a;
+}
+
+label {
+    margin-left: 34%;
+    font-size: 20px;
+}
+
+input[type="text"] {
+    border-radius: 4px;
+    padding: 7px 5px;
+    border: 1px solid gray;
+    font-size: 18px;
+    outline: none;
+}
+
+button {
+    background: #ed1c40;
+    border: #ed1c40;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+}
+
+#result {
+    text-align: center;
+}
