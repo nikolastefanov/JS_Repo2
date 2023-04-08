@@ -1,0 +1,369 @@
+async function request(url,options){
+
+    const response=await fetch(url,options);
+
+    if(response.ok!=true){
+        const error=await response.json();
+        alert(error.message);
+        throw new Error(error.message)
+    }
+
+    const data=await response.json();
+
+    return data;
+}
+
+
+
+// function to load all books from server and display them
+
+async function getAllBooks(){
+
+    //rows-->books
+    const books=await request('http://localhost:3030/jsonstore/collections/books');
+
+    const rows=Object.entries(books)
+                .map(b=>createRow(b)) 
+                .join(' ');
+     // createRow traibva da prieme id i book
+
+document.querySelector('tbody').innerHTML=rows;
+
+return books;
+}
+
+function createRow([id,book]){
+
+    const result=` <tr data-id="${id}">
+                       <td>${book.title}</td>
+                       <td>${book.author}</td>
+                       <td>
+                           <button class="editBtn">Edit</button>
+                           <button class="deleteBtn">Delete</button>
+                       </td>
+                  </tr>`;
+
+    return result;
+}
+
+
+
+//function for creating a new book
+
+async function createBook(event){
+
+    event.preventDefault();
+
+    const formData=new FormData(event.target);
+
+    const book={
+        title:formData.get('title'),
+        author:formData.get('author')
+    };
+
+   //console.log(book);
+
+    await request('http://localhost:3030/jsonstore/collections/books',{
+        method:'post',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(book)
+    });
+
+    event.target.reset(); //IZTRIVA poletata na formata
+
+    getAllBooks();
+}
+
+
+//function for updating an existing book using 'ID'
+
+async function updateBook(event){
+
+    event.preventDefault();
+       
+    const formData=new FormData(event.target);
+
+    const id=formData.get('id');
+
+    const book={
+        title:formData.get('title'),
+        author:formData.get('author')
+    }
+        
+
+    const result=await request('http://localhost:3030/jsonstore/collections/books/'+id,{
+        method:'put',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(book)
+    })
+
+    document.getElementById('createForm').style.display='block';
+    document.getElementById('editForm').style.display='none';
+    event.target.reset();
+
+    getAllBooks();
+}
+
+//function for deleting an existing book using "ID"
+
+async function deleteBook(id){
+
+    const result=await request('http://localhost:3030/jsonstore/collections/books/'+id,{
+        method:'delete'
+    })
+
+    getAllBooks();
+
+
+    return result;
+}
+
+
+
+// main function
+//      --attach event listeners as described
+//      --load all books and display them
+
+function start(){
+
+    //event listener on the load button
+
+    document.getElementById('loadBooks').addEventListener('click',getAllBooks);
+
+    //event list on the create button
+
+    document.getElementById('createForm').addEventListener('submit',createBook);
+
+    //event listener in the delete and edit buttons
+
+    document.querySelector('table').addEventListener('click',handleTableClick);
+
+    document.getElementById('editForm').addEventListener('submit',updateBook);
+
+    document.querySelector('#editForm [type="button"]').addEventListener('click',(event)=>{
+        document.getElementById('createForm').style.display='block';
+        document.getElementById('editForm').style.display='none';
+        event.target.reset();
+    })
+
+    getAllBooks();
+
+}
+
+start();
+
+
+function handleTableClick(event){
+
+    if(event.target.className=='editBtn'){
+        //console.log('clicked edit'); //proba
+
+        document.getElementById('createForm').style.display='none';
+        document.getElementById('editForm').style.display='block';
+
+        
+
+        const bookId=event.target.parentNode.parentNode.dataset.id;
+
+        /*
+        dataset.id-->>bzima id na book
+            da dostapi data property "id"
+            pri sazdavane po-nagore mu davame ume--> data-id="${id}""
+        */
+
+        loadBookForEditing(bookId);
+
+    }else if(event.target.className=='deleteBtn'){
+
+     //padacht prozorec kato alert sas svoistvo "confirm"
+
+     const confirmed=confirm('Are you sure you want to delete this.book?');
+
+     if(confirmed){
+
+        const bookId=event.target.parentNode.parentNode.dataset.id;
+
+        deleteBook(bookId);
+     }
+    }
+}
+
+
+async function loadBookForEditing(id){
+
+    const book=await request('http://localhost:3030/jsonstore/collections/books/'+id);
+
+document.querySelector('#editForm [name="id"]').value=id;
+document.querySelector('#editForm [name="title"]').value=book.title;
+document.querySelector('#editForm [name="author"]').value=book.author;
+
+}
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Books</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <button id="loadBooks">LOAD ALL BOOKS</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Harry Poter</td>
+                <td>J. K. Rowling</td>
+                <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Game of Thrones</td>
+                <td>George R. R. Martin</td>
+                <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form id="createForm">
+        <h3>FORM</h3>
+        <label>TITLE</label>
+        <input type="text" name="title" placeholder="Title...">
+        <label>AUTHOR</label>
+        <input type="text" name="author" placeholder="Author...">
+        <button>Submit</button>
+    </form>
+
+    <form id="editForm">
+        <h3>FORM</h3>
+        <label>TITLE</label>
+        <input type="hidden" name="id">
+        <input type="text" name="title" placeholder="Title...">
+        <label>AUTHOR</label>
+        <input type="text" name="author" placeholder="Author...">
+        <input type="submit" value="Save">
+        <input type="button" value="Cancel">
+    </form>
+
+    <script src="./app.js"></script>
+</body>
+</html>
+
+
+{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+}
+
+table{
+    border:1px solid #234465;
+    padding: 1%;
+    margin: 0 auto;
+    width: 70%;
+    border-radius: 4px;
+}
+table th{
+    text-decoration: underline;
+    text-align: center;
+}
+table tbody td{
+    text-align: center;
+    border-bottom:1px solid black;
+    padding: 0.5%;
+}
+
+table tbody tr:nth-child(even){
+    background-color: #234465;
+    color: white
+}
+
+table tbody tr:nth-child(odd){
+    color: #234465;
+    border-bottom: 1px solid black;
+}
+
+table tbody tr:nth-child(odd) button{
+    background: #234465;
+    color:white;
+}
+
+table tbody tr:nth-child(even) button{
+    background: white;
+    color:#234465;
+}
+
+table tr td:not(:last-child):hover{
+    text-decoration: underline;
+}
+
+table button{
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin-left: 8%;
+}
+
+table button:hover{
+    text-decoration: underline;
+}
+
+button#loadBooks{
+    margin: 0 auto;
+    display:block;
+    padding:1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    border-radius: 4px;
+}
+
+
+label, input{
+    display:block;
+    margin: 0 auto;
+}
+
+form input{
+    margin-bottom: 1%;
+    width: 25%;
+}
+
+form{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+form button{
+    margin: 0 auto;
+    display:block;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    border-radius: 4px;
+    background-color: #234465;
+    color:white;
+    border: none;
+    padding: 0.5%;
+}
+
+#editForm{
+ display:none;
+}
+
